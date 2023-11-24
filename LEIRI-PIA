@@ -1,0 +1,292 @@
+#include <iostream>
+#include <fstream>
+#include <string>
+using namespace std;
+
+struct Orden {
+    string restaurante;
+    int numeroTicket;
+    string vendedor;
+    string fecha;
+    string listaArticulos;
+    double precioArticulos;
+    int numeroTotalArticulos;
+    double precioUnitario;
+    double descuentos;
+    double propina;
+    double impuesto;
+    double total;
+    bool cancelado;
+    
+};
+
+const int MAX_ORDENES = 100; // Máximo número de órdenes que se pueden almacenar
+
+Orden ordenes[MAX_ORDENES]; // Arreglo para almacenar todas las órdenes
+int numOrdenes = 0; // Número actual de órdenes almacenadas
+
+// Función para agregar una nueva orden
+void altaOrden() {
+    if (numOrdenes == MAX_ORDENES) {
+        cout << "No se pueden agregar más órdenes. El límite se ha alcanzado." << endl;
+        return;
+    }
+
+    Orden nuevaOrden;
+
+    cout << " Restaurante: ";
+    getline(cin, nuevaOrden.restaurante);
+
+    cout << " Numero de Ticket: ";
+    cin >> nuevaOrden.numeroTicket;
+    cin.ignore(); // Ignorar el salto de línea después de la entrada de númeroTicket
+
+    cout << " Vendedor: ";
+    getline(cin, nuevaOrden.vendedor);
+
+    cout << " Fecha: ";
+    getline(cin, nuevaOrden.fecha);
+
+    cout << " Lista de Articulos: ";
+    getline(cin, nuevaOrden.listaArticulos);
+
+    cout << " Precio de los Articulos: $";
+    cin >> nuevaOrden.precioArticulos;
+
+    cout << " Numero Total de Articulos: ";
+    cin >> nuevaOrden.numeroTotalArticulos;
+
+    cout << " Precio Unitario: $";
+    cin >> nuevaOrden.precioUnitario;
+
+    cout << " Descuentos o Promociones: $";
+    cin >> nuevaOrden.descuentos;
+
+    cout << " Propina (%): ";
+    cin >> nuevaOrden.propina;
+
+    cout << " Impuesto: $";
+    cin >> nuevaOrden.impuesto;
+
+    nuevaOrden.total = nuevaOrden.precioArticulos - nuevaOrden.descuentos + nuevaOrden.propina + nuevaOrden.impuesto;
+    nuevaOrden.cancelado = false;
+
+    ordenes[numOrdenes++] = nuevaOrden;
+
+    system("cls");
+    cout << "La orden ha sido agregada exitosamente." << endl;
+    
+}
+
+// Función para modificar una orden existente
+void modificarOrden() {
+    int numeroTicket;
+    cout << "Ingrese el numero de ticket de la orden a modificar: ";
+    cin >> numeroTicket;
+
+    bool encontrado = false;
+
+    for (int i = 0; i < numOrdenes; i++) {
+        if (ordenes[i].numeroTicket == numeroTicket) {
+            Orden& orden = ordenes[i]; 
+            
+
+            cout << "Restaurante: ";
+            getline(cin, orden.restaurante);
+
+            cout << "Numero de Ticket: ";
+            cin >> orden.numeroTicket;
+            cin.ignore();
+
+            cout << "Vendedor: ";
+            getline(cin, orden.vendedor);
+
+            cout << "Fecha: ";
+            getline(cin, orden.fecha);
+
+
+            cout << "Lista de Articulos: ";
+            getline(cin, orden.listaArticulos);
+
+            cout << "Precio de los Articulos: $";
+            cin >> orden.precioArticulos;
+
+            cout << "Numero Total de Articulos: ";
+            cin >> orden.numeroTotalArticulos;
+
+            cout << "Precio Unitario: $";
+            cin >> orden.precioUnitario;
+
+            cout << "Descuentos o Promociones: $";
+            cin >> orden.descuentos;
+
+            cout << "Propina (%): ";
+            cin >> orden.propina;
+
+            cout << "Impuesto: $";
+            cin >> orden.impuesto;
+
+            orden.total = orden.precioArticulos - orden.descuentos + orden.propina + orden.impuesto;
+
+            cout << "La orden ha sido modificada exitosamente." << endl;
+
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        cout << "No se encontro ninguna orden con el numero de ticket ingresado." << endl;
+    }
+}
+
+// Función para cancelar una orden
+void cancelarOrden() {
+    int numeroTicket;
+    cout << "Ingrese el numero de ticket de la orden a cancelar: ";
+    cin >> numeroTicket;
+
+    bool encontrado = false;
+
+    for (int i = 0; i < numOrdenes; i++) {
+        if (ordenes[i].numeroTicket == numeroTicket) {
+            ordenes[i].cancelado = true;
+
+            cout << "La orden ha sido cancelada exitosamente." << endl;
+
+            encontrado = true;
+            break;
+        }
+    }
+
+    if (!encontrado) {
+        cout << "No se encontro ninguna orden con el numero de ticket ingresado." << endl;
+    }
+}
+
+// Función para mostrar la lista de órdenes
+void listaOrdenes() {
+    int opcion;
+    cout << "Filtrar por:" << endl;
+    cout << "1. Numero de Ticket" << endl;
+    cout << "2. Lista de Articulos" << endl;
+    cout << "3. Todos" << endl;
+    cout << "Opcion: ";
+    cin >> opcion;
+    system("cls");
+    cout << "------------------------------------------------------" << endl;
+    cout << "------------------ Lista de ordenes ------------------" << endl;
+    cout << "------------------------------------------------------" << endl;
+    for (int i = 0; i < numOrdenes; i++) {
+        if (opcion == 1 && !ordenes[i].cancelado) {
+            cout << "Numero de Ticket: " << ordenes[i].numeroTicket << endl;
+            cout << "Restaurante: " << ordenes[i].restaurante << endl;
+            cout << "Fecha: " << ordenes[i].fecha << endl;
+            cout << "Total: $" << ordenes[i].total << endl;
+            cout << "-----------------------------------------------------" << endl;
+        }
+        else if (opcion == 2 && !ordenes[i].cancelado) {
+            cout << "Lista de Articulos: " << ordenes[i].listaArticulos << endl;
+            cout << "Restaurante: " << ordenes[i].restaurante << endl;
+            cout << "Fecha: " << ordenes[i].fecha << endl;
+            cout << "Total: $" << ordenes[i].total << endl;
+            cout << "-----------------------------------------------------" << endl;
+        }
+        else if (opcion == 3) {
+            cout << "Numero de Ticket: " << ordenes[i].numeroTicket << endl;
+            cout << "Lista de Articulos:: " << ordenes[i].listaArticulos << endl;
+            cout << "Restaurante: " << ordenes[i].restaurante << endl;
+            cout << "Fecha: " << ordenes[i].fecha << endl;
+            cout << "Total: $" << ordenes[i].total << endl;
+            cout << "-----------------------------------------------------" << endl;
+        }
+    }
+}
+
+// Función para limpiar la pantalla
+void limpiarPantalla() {
+    system("cls");
+}
+
+// Función para guardar la información en un archivo de texto
+void guardar() {
+    ofstream archivo("tickets.txt");
+
+    if (archivo.is_open()) {
+        for (int i = 0; i < numOrdenes; i++) {
+            if (ordenes[i].cancelado) {
+                continue;
+            }
+
+            archivo << "Número de Ticket: " << ordenes[i].numeroTicket << endl;
+            archivo << "Restaurante: " << ordenes[i].restaurante << endl;
+            archivo << "Vendedor: " << ordenes[i].vendedor << endl;
+            archivo << "Fecha: " << ordenes[i].fecha << endl;
+            archivo << "Lista de Artículos: " << ordenes[i].listaArticulos << endl;
+            archivo << "Precio de los Artículos: $" << ordenes[i].precioArticulos << endl;
+            archivo << "Número Total de Artículos: " << ordenes[i].numeroTotalArticulos << endl;
+            archivo << "Precio Unitario: $" << ordenes[i].precioUnitario << endl;
+            archivo << "Descuentos o Promociones: $" << ordenes[i].descuentos << endl;
+            archivo << "Propina: " << ordenes[i].propina << "%" << endl;
+            archivo << "Impuesto: $" << ordenes[i].impuesto << endl;
+            archivo << "Total: $" << ordenes[i].total << endl;
+            archivo << "-----------------------------------------------------" << endl;
+            
+        }
+
+        archivo.close();
+        cout << "La información se ha guardado en el archivo tickets.txt." << endl;
+    }
+    else {
+        cout << "No se pudo abrir el archivo." << endl;
+    }
+}
+
+int main() {
+    int opcion;
+
+    do {
+        cout << "---------------------------------------------------------" << endl; 
+        cout << "-------------BIENVENIDO AL RESTAURANTE LYLOS-------------" << endl;
+        cout << "---------------------------------------------------------" << endl;
+        cout << "MENU DE OPCIONES" << endl;
+        cout << "1. Alta de Orden" << endl;
+        cout << "2. Modificar Orden" << endl;
+        cout << "3. Eliminar o Cancelar Orden" << endl;
+        cout << "4. Lista de Ordenes" << endl;
+        cout << "5. Limpiar Pantalla" << endl;
+        cout << "6. Salir" << endl;
+        cout << "Elija su opcion: ";
+        cin >> opcion;
+        cin.ignore();
+        cout << "----------------------------------------------" << endl;
+        system("cls");
+
+        switch (opcion) {
+        case 1:
+            altaOrden();
+            break;
+        case 2:
+            modificarOrden();
+            break;
+        case 3:
+            cancelarOrden();
+            break;
+        case 4:
+            listaOrdenes();
+            break;
+        case 5:
+            limpiarPantalla();
+            break;
+        case 6:
+            guardar();
+            break;
+        default:
+            cout << "Opcion invalida. Por favor, intenta nuevamente." << endl;
+            break;
+            system("cls");
+        }
+    } while (opcion != 6);
+
+    return 0;
+}
